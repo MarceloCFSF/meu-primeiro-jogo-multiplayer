@@ -62,32 +62,26 @@
             }
 
             function movePlayer(command){
-                console.log(`game.movePlayer() -> Moving ${command.playerId} with ${command.keyPressed}`)
-                
                 const acceptedMoves = {
                     ArrowUp(player) {
-                        console.log('game.movePlayer().ArrowUp() -> Moving player Up')
                         if (keyPressed === 'ArrowUp' && player.y - 1 >= 0) {
                             player.y = player.y - 1
                             return
                         }
                     },
                     ArrowRight(player) {
-                        console.log('game.movePlayer().ArrowRight() -> Moving player Right')
                         if (keyPressed === 'ArrowRight' && player.x + 1 < screen.width) {
                             player.x = player.x + 1
                             return
                         }
                     },
                     ArrowDown(player) {
-                        console.log('game.movePlayer().ArrowDown() -> Moving player Down')
                         if (keyPressed === 'ArrowDown' && player.y + 1 < screen.width) {
                             player.y = player.y + 1
                             return
                         }
                     },
                     ArrowLeft(player) {
-                        console.log('game.movePlayer().ArrowLeft() -> Moving player Left')
                         if (keyPressed === 'ArrowLeft' && player.x - 1 >= 0) {
                             player.x = player.x - 1
                             return
@@ -96,28 +90,28 @@
                 }
 
                 const keyPressed = command.keyPressed
+                const playerId = command.playerId
                 const player = state.players[command.playerId]
                 const moveFunction = acceptedMoves[keyPressed]
 
                 if (player && moveFunction){
                     moveFunction(player)
-                    checkForFruitCollision()
+                    checkForFruitCollision(playerId)
                 }
 
             }
 
-            function checkForFruitCollision() {
-                for (const playerId in state.players) {
-                    const player = state.players[playerId];
+            function checkForFruitCollision(playerId) {
+                const player = state.players[playerId]
 
-                    for (const fruitId in state.fruits) {
-                        const fruit = state.fruits[fruitId];
-                        console.log(`Checking ${playerId} and ${fruitId}`)
-                        
-                        if (player.x === fruit.x && player.y === fruit.y) {
-                            console.log(`COLLISION between ${playerId} and ${fruitId}`)
-                            removeFruit({fruitId: fruitId})
-                        }
+                
+                for (const fruitId in state.fruits) {
+                    const fruit = state.fruits[fruitId];
+                    console.log(`Checking ${playerId} and ${fruitId}`)
+                    
+                    if (player.x === fruit.x && player.y === fruit.y) {
+                        console.log(`COLLISION between ${playerId} and ${fruitId}`)
+                        removeFruit({fruitId: fruitId})
                     }
                 }
             }
@@ -137,7 +131,11 @@
         keyboardListener.subscribe(game.movePlayer)
 
         game.addPlayer({playerId: 'player1', playerX: 0, playerY: 0})
+        game.addPlayer({playerId: 'player2', playerX: 2, playerY: 0})
+        game.addPlayer({playerId: 'player3', playerX: 2, playerY: 3})
+        game.addPlayer({playerId: 'player4', playerX: 5, playerY: 0})
         game.addFruit({fruitId: 'fruit1', fruitX: 3, fruitY: 3})
+        game.addFruit({fruitId: 'fruit2', fruitX: 4, fruitY: 5})
 
         function createKeyboardListener() {
             const state = {
@@ -149,7 +147,6 @@
             }
 
             function notifyAll(command) {
-                console.log(`keyboardListener -> Notifying ${state.observers.length} observers`)
 
                 for (const observerFunction of state.observers) {
                     observerFunction(command)
