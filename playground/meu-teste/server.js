@@ -24,6 +24,8 @@ console.log(game.state)
 sockets.on('connect', (socket) => {
     const playerId = socket.id
     console.log(`> Player connect on Server with id: ${playerId}`)
+
+    socket.emit('setup', game.state)
 })
 
 server.listen(3000, () => {

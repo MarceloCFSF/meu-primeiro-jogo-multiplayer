@@ -35,6 +35,13 @@
             const playerId = socket.id
             console.log(`Player connect on Client with id: ${playerId}`)
         })
+
+        socket.on('setup', (state) => {
+            console.log(`> Receiving "setup" event from server `)
+            console.log(state)
+
+            game.state = state
+        })
     </script>
 </body>
 </html>
